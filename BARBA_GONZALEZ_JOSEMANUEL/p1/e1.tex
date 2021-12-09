@@ -1,0 +1,28 @@
+% Elimine los símbolos de tanto por ciento para descomentar las siguientes instrucciones e incluir una imagen en su respuesta. La mejor ubicación de la imagen será determinada por el compilador de Latex. No tiene por qué situarse a continuación en el fichero en formato pdf resultante.
+\begin{figure}
+\centering
+\includegraphics[width=0.7\linewidth]{./defenseValueCellsHead} % no es necesario especificar la extensión del archivo que contiene la imagen
+\caption{Estrategia devoradora para la mina}
+\label{fig:defenseValueCellsHead}
+\end{figure}
+
+\begin{lstlisting}
+	/**
+	* Dada una celda o posición devuelve un valor para crear en otra función la matriz de valores de las celdas.
+	* @param row Fila a evaluar.
+	* @param col Columna a evaluar.
+	* @param freeCells matriz de numero de celdas-ancho por número de celdas-alto, contiene true si el centro de la celda
+	*                  esta libre y false si el centro de la celda esta ocupado por un obstáculo.
+	* @param nCellsWidth número de celdas en anchura.
+	* @param nCellsHeight número de celdas en altura.
+	* @param mapWidth ancho total del mapa preestablecido.
+	* @param mapHeight alto total del mapa preestablecido.
+	* @param obstacles Lista actual de Obstáculos creados y situados.
+	* @param defenses Lista actual de Defensas creadas, no situadas.
+	* @return Devuelve un valor determinado para una posición determinada del tablero.
+	*/
+	float cellValue(int row, int col, placePosition place, bool** freeCells, int nCellsWidth, int nCellsHeight
+	, float mapWidth, float mapHeight, List<Object*> obstacles, List<Defense*> defenses)
+\end{lstlisting}
+
+Otorga 100 puntos a las posiciones más valiosas, en este caso las centrales, las segundas más valiosas de 90 puntos a los bordes, 20 puntos a las posiciones cercanas al centro y 10 puntos al resto de posiciones.

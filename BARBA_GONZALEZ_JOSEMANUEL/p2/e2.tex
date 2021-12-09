@@ -1,0 +1,20 @@
+Estructura de la tabla, en la matriz abajo descrita se guarda la tabla de subproblemas resueltos del algoritmo de la mochila.
+\begin{lstlisting}
+	std::vector< std::vector<float> > defensesAses(tlpWidth, std::vector<float>(tlpHeight));
+\end{lstlisting}
+
+Lista de las defensas, se usa la lista de las defensas para realizar el calculo de la valoración dada por la función ``defensiveCapacity''.
+\begin{lstlisting}
+	std::list<Defense*> defenses
+\end{lstlisting}
+
+Valor del peso de cada defensa.
+\begin{lstlisting}
+	(*itDefenses)->cost
+\end{lstlisting}
+
+Valor de la capacidad defensiva de cada defensa, calculada individualmente por la función ``defensiveCapacity''.
+\begin{lstlisting}
+	float value;
+	value = defensiveCapacity(itDefenses);
+\end{lstlisting}

@@ -1,0 +1,14 @@
+\begin{lstlisting}
+	/**
+	* Funcion que comprueba la factibilidad de posicionar una defensa en una posicion dada del mapa.
+	* @param currentDefense Defensa actual a evaluar su posicion.
+	* @param defenses Lista actual de Defensas creadas y situadas.
+	* @param obstacles Lista actual de Obstaculos creados y situados.
+	* @param mapWidth ancho total del mapa preestablecido.
+	* @param mapHeight alto total del mapa preestablecido.
+	* @return Devuelve true si se puede colocar y false si no se puede colocar.
+	*/
+	bool factibility(Defense* currentDefense, std::list<Defense*> defenses, std::list<Object*> obstacles, float mapWidth, float mapHeight)
+\end{lstlisting}
+
+Comprueba que no se salga de los bordes y que no choque contra un obstáculo u defensa.

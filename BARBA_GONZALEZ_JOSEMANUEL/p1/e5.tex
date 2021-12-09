@@ -1,0 +1,32 @@
+\begin{lstlisting}
+	/**
+	* Dada una celda o posición devuelve un valor para crear en otra función la matriz de valores de las celdas.
+	* @param row Fila a evaluar.
+	* @param col Columna a evaluar.
+	* @param freeCells matriz de numero de celdas-ancho por número de celdas-alto, contiene true si el centro de la celda
+	*                  esta libre y false si el centro de la celda esta ocupado por un obstáculo.
+	* @param nCellsWidth número de celdas en anchura.
+	* @param nCellsHeight número de celdas en altura.
+	* @param mapWidth ancho total del mapa preestablecido.
+	* @param mapHeight alto total del mapa preestablecido.
+	* @param obstacles Lista actual de Obstáculos creados y situados.
+	* @param defenses Lista actual de Defensas creadas, no situadas.
+	* @return Devuelve un valor determinado para una posición determinada del tablero.
+	*/
+	float cellValue(int row, int col, placePosition place, bool** freeCells, int nCellsWidth, int nCellsHeight
+	, float mapWidth, float mapHeight, List<Object*> obstacles, List<Defense*> defenses)
+	.
+	.
+	.
+	.
+	case bordered:
+		valueOfCell = valueOfCell * 0.5f;
+		break;
+	case other:
+		valueOfCell = valueOfCell * 0.2f;
+		default:
+	valueOfCell = valueOfCell * 0.1f;
+		break;
+\end{lstlisting}
+
+En mi caso, la segunda parte del algoritmo ``cellValue'' otorgo 50 puntos a las posiciones cercanas al centro, 20 puntos a posiciones alejadas del centro del mapa, y 10 puntos al resto de posiciones, para que estén cerca del centro de extracción, y colocar el resto de las defensas.

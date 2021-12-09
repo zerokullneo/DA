@@ -1,0 +1,58 @@
+\begin{lstlisting}
+/**
+* Función que dada una defensa devuelva su capacidad o valor defensivo. La capacidad o valor defensiva
+* es una valoracion de los atributos health y cost mas attacksPerSecond y damage mas range.
+* @param currentDefense Iterador a la defensa actual para calcular su valor.
+* @return Devuelve un valor tipo float simulando la capacidad defensiva de la defensa.
+*/
+float defensiveCapacity(std::list<Defense*>::iterator currentDefense)
+{
+	return ((*currentDefense)->health / (float)(*currentDefense)->cost)
+	+ ((*currentDefense)->attacksPerSecond + (*currentDefense)->damage)
+	+ ((*currentDefense)->range / 10);
+}
+
+/**
+* Funcion  que rellena la tabla de subproblemas resueltos con el algoritmo de la mochila
+* @param defenses Lista de defensas disponibles para adquirir.
+* @param ases Cantidad de ases/monedas para adquirir las defensas.
+* @return Devuelve la tabla de subproblemas resueltos en forma de matriz, con forma de vector de vectores.
+*/
+std::vector< std::vector<float> > tableResults(std::list<Defense*> defenses, unsigned int ases)
+{
+	size_t tlpWidth = defenses.size();//objetos
+	size_t tlpHeight = ases;//capacidad
+	std::vector< std::vector<float> > defensesAses(tlpWidth, std::vector<float>(tlpHeight));
+	float value;
+	
+	std::list<Defense*>::iterator itDefenses = defenses.begin();
+	
+	/**
+	* valor = ((*currentDefense)->health / (float)(*currentDefense)->cost) + ((*currentDefense)->attacksPerSecond + (*currentDefense)->damage)
+	* peso = (*itDefenses)->cost
+	* salttamos de la lista de defensas la primera que ya ha sido comprada.
+	*/
+	++itDefenses;
+	for (int j = 0; j < tlpHeight; ++j)
+	{
+		if ( j < (*itDefenses)->cost )
+		defensesAses[0][j] = 0;
+		else
+		defensesAses[0][j] = defensiveCapacity(itDefenses);
+	}
+	
+	for (int i = 1; i < tlpWidth; ++i, ++itDefenses)
+	{
+		value = defensiveCapacity(itDefenses);
+		for (int j = 0; j < tlpHeight; ++j)
+		{
+			if (j < (*itDefenses)->cost)
+			defensesAses[i][j] = defensesAses[i-1][j];
+			else
+			defensesAses[i][j] = std::max(defensesAses[i-1][j], defensesAses[i-1][j - (*itDefenses)->cost] + value);
+		}
+	}
+
+	return defensesAses;
+}
+\end{lstlisting}

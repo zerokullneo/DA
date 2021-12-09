@@ -1,0 +1,15 @@
+./simulador -level 2153 -replay replay.txt => 89.00 Base raided!
+
+./simulador -level 2893 -replay replay.txt => 538.62 Base raided!
+
+./simulador -level 2879 -replay replay.txt => 196.80 Base raided!
+
+./simulador -level 2871 -replay replay.txt => 192.50 Base raided!
+
+./simulador -level 2891 -replay replay.txt => 122.60 Base raided!
+
+./simulador -level 2369 -replay replay.txt => 268.61 Base raided!
+
+./simulador -level 2991 -replay replay.txt => 299.91 Base raided!
+
+./simulador -level 3991 -replay replay.txt => 600.00 Base defended!

@@ -1,0 +1,17 @@
+\begin{lstlisting}
+/**
+* Funcion que posiciona las defensas y que tiene implicita la funcion objetivo del algoritmo Voraz
+* @param freeCells matriz de numero de celdas-ancho por numero de celdas-alto, contiene true si el centro de la celda
+*                  esta libre y false si el centro de la celda esta ocupado por un obstaculo.
+* @param nCellsWidth numero de celdas en anchura.
+* @param nCellsHeight numero de celdas en altura.
+* @param mapWidth ancho total del mapa preestablecido.
+* @param mapHeight alto total del mapa preestablecido.
+* @param obstacles Lista actual de Obstaculos creados y situados.
+* @param defenses Lista actual de Defensas creadas, no situadas.
+*/
+void DEF_LIB_EXPORTED placeDefenses(bool** freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight
+, std::list<Object*> obstacles, std::list<Defense*> defenses)
+\end{lstlisting}
+
+En mi caso, el algoritmo es voraz porque crea una matriz de valores entre 100 y 10 puntos a las casillas, para luego ordenarlas en una lista de mayor a menor valor, y terminar colocando las defensas, primero el centro de extracción en el centro del mapa, como segunda opción colocar ciertas defensas en los bordes del mapa o lo más cercano posible, por último, en casillas cercanas al centro del mapa.

@@ -1,0 +1,14 @@
+\begin{lstlisting}
+	/**
+	* Funcion que selecciona la mejor posicion dado los valores de la matriz cellsvalues.
+	* @param valuelist iterador que contiene el valor actual de una posicion dada del mapa.
+	* @param freeCells matriz de numero de celdas-ancho por numero de celdas-alto, contiene true si el centro de la celda
+	*                  esta libre y false si el centro de la celda esta ocupado por un obstaculo.
+	* @param nCellsWidth numero de celdas en anchura.
+	* @param nCellsHeight numero de celdas en altura.
+	* @param extraction Bit que indica si es o no el centro de extraccion.
+	* @return Devuelve un tipo Vector3 con la posicion mas prometedora para la defensa.
+	*/
+	Vector3 cellSelect(std::list<ValueList>::iterator valuelist, bool** freeCells, int nCellsWidth, int nCellsHeight, int extraction = 0)
+\end{lstlisting}
+En mi caso, la función ``cellSelect'' se comporta eligiendo paulatinamente la primera posición más valiosa de la matriz de valores, sin tener en cuenta la posición que ocupa en el mapa dicho valor, y comportándose de forma voraz.

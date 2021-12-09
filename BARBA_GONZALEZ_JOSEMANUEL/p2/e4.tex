@@ -1,0 +1,37 @@
+\begin{lstlisting}
+/**
+* Función que recupera la solucion de la tabla rellena, almacenando los "id" "selectedIDs"
+* @param tlpResults Matriz o tabla de subproblemas resueltos previamente calculada.
+* @param defenses Lista de defensas disponibles para adquirir.
+* @param selectedIDs Paso por referencia de la lista de IDs seleccionado
+* @return Devuelve la lista de IDs seleccionados en selectedIDs
+*/
+std::vector<float> pathResult(std::vector< std::vector<float> > tlpResults, std::list<Defense*> defenses, std::list<int> &selectedIDs)
+{
+	int tlpWidth = (int)tlpResults.size();
+	int tlpHeight = (int)tlpResults.data()->size();
+	std::vector<float> pathSolution(tlpWidth);
+	
+	auto itDefenses = --defenses.end();
+	
+	for (int i = tlpWidth-1; i > 0; --i, --itDefenses)
+	{
+		for (int j = tlpHeight-1; j > 0; j = j - (*itDefenses)->cost)
+		{
+			if (tlpResults[i][j] != tlpResults[i - 1][j])
+			{
+				pathSolution[i] = tlpResults[i][j];
+				selectedIDs.push_back((*itDefenses)->id);
+			}
+			else
+			if (i == 1 and (tlpResults[i][j] == tlpResults[i-1][j]))
+			{
+				pathSolution[i] = tlpResults[1][j];
+				selectedIDs.push_back((*itDefenses)->id);
+			}
+		}
+	}
+
+	return pathSolution;
+}
+\end{lstlisting}
