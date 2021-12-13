@@ -178,6 +178,29 @@ Vector3 cellSelect(std::list<ValueList>::iterator valuelist, bool** freeCells, i
 }
 #endif
 
+void Fusion(std::vector<float>& v, size_t i, size_t k, size_t j)
+{
+	size_t n = j - i + 1;
+	size_t p = i; size_t q = k + 1;
+	std::vector<float> w;
+
+	for(int it = 0; it < n; ++it)
+	{
+		if (p <= k and (q > j or v[p] <= v[q]))
+		{
+			w[it] = v[p];
+			p = p + 1;
+		}
+		else
+		{
+			w[it] = v[q];
+			q = q + 1;
+		}
+	}
+	for (int it = 0; it < n; ++it)
+		v[i - 1 + it] = w[it];
+}
+
 void orderFusion(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
 {
 	size_t n = pos_j - pos_i + 1;
@@ -199,13 +222,58 @@ void orderFusion(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
 	else
 	{
 		pos_k = (pos_i - 1) + (n / 2);
+		//std::merge()
 		orderFusion(orderCells, pos_i, pos_k);
 		orderFusion(orderCells, pos_k + 1, pos_j);
+		Fusion(orderCells, pos_i, pos_k, pos_j);
+	}
+}
+size_t pivote(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
+{
+	size_t p = pos_i;
+	float x = orderCells[pos_i];
+
+	for (int k = pos_i + 1; k < pos_j; ++k)
+	{
+		if (orderCells[k] <= x)
+		{
+			p = p + 1;
+			float aux = orderCells[p];
+			orderCells[p] = orderCells[k];
+			orderCells[k] = aux;
+		}
+		orderCells[pos_i] = orderCells[p];
+		orderCells[p] = x;
 	}
 }
 
-void orderRapida()
-{}
+
+void orderRapida(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
+{
+	size_t n = pos_j - pos_i + 1;
+	size_t n0 = 3;
+
+	if(n <= n0)
+	{
+		float maxim = std::max(orderCells[pos_i], std::max(orderCells[pos_i +1],  orderCells[pos_j]));
+		float minim = std::min(orderCells[pos_i], std::min(orderCells[pos_i +1],  orderCells[pos_j]));
+		float inter;
+		if(orderCells[pos_i] < maxim and orderCells[pos_i] >= minim)
+			inter = orderCells[pos_i];
+		else if(orderCells[pos_i + 1] < maxim and orderCells[pos_i + 1] >= minim)
+			inter = orderCells[pos_i + 1];
+		else
+			inter = orderCells[pos_j];
+		orderCells[pos_i] = maxim; orderCells[pos_i + 1] = inter; orderCells[pos_j] = minim;
+	}
+	else
+	{
+		size_t p = pivote(orderCells, pos_i, pos_j);
+		orderRapida(orderCells, pos_i, p - 1);
+		orderRapida(orderCells, p + 1, pos_j);
+	}
+
+}
 
 void orderMonticulo()
 {}
@@ -276,5 +344,7 @@ void DEF_LIB_EXPORTED placeDefenses3(bool** freeCells, int nCellsWidth, int nCel
 	} while(cMonticulo.tiempo() < e_abs / (e_rel + e_abs));
 	cMonticulo.parar();
 
-	std::cout << (nCellsWidth * nCellsHeight) << '\t' << c.tiempo() / r << '\t' << c.tiempo()*2 / r << '\t' << c.tiempo()*3 / r << '\t' << c.tiempo()*4 / r << std::endl;
+	std::cout << (nCellsWidth * nCellsHeight) << '\t' << cNOrdenado.tiempo() / (double)rNOrdenado << '\t'
+	<< cFusion.tiempo()*2 / (double)rFusion << '\t' << cRapida.tiempo()*3 / (double)rRapida << '\t'
+	<< cMonticulo.tiempo()*4 / (double)rMonticulo << std::endl;
 }
