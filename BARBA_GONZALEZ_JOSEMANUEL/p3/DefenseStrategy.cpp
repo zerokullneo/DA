@@ -176,59 +176,69 @@ Vector3 cellSelect(std::list<ValueList>::iterator valuelist, bool** freeCells, i
 
 	return valuePosition;
 }
-#endif
+#endif/* P1 */
 
-void Fusion(std::vector<float>& v, size_t i, size_t k, size_t j)
+/**
+ *
+ * @param v
+ * @param i
+ * @param k
+ * @param j
+ */
+void Fusion(std::vector<ValueList>& v, size_t i, size_t k, size_t j)
 {
 	size_t n = j - i + 1;
 	size_t p = i; size_t q = k + 1;
-	std::vector<float> w;
+	std::vector<ValueList> w;
 
 	for(int it = 0; it < n; ++it)
 	{
-		if (p <= k and (q > j or v[p] <= v[q]))
+		if (p <= k and (q > j or v[p].value <= v[q].value))
 		{
-			w[it] = v[p];
-			p = p + 1;
+			w.push_back(v[p]);
+			p++;
 		}
 		else
 		{
-			w[it] = v[q];
-			q = q + 1;
+			w.push_back(v[q]);
+			q++;
 		}
 	}
 	for (int it = 0; it < n; ++it)
 		v[i - 1 + it] = w[it];
 }
 
-void orderFusion(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
+/**
+ *
+ * @param orderCells
+ * @param pos_i
+ * @param pos_j
+ */
+void orderFusion(std::vector<ValueList>& orderCells, size_t pos_i, size_t pos_j)
 {
 	size_t n = pos_j - pos_i + 1;
 	size_t n0 = 3, pos_k;
 
 	if (n <= n0)
-	{
-		float maxim = std::max(orderCells[pos_i], std::max(orderCells[pos_i +1],  orderCells[pos_j]));
-		float minim = std::min(orderCells[pos_i], std::min(orderCells[pos_i +1],  orderCells[pos_j]));
-		float inter;
-		if(orderCells[pos_i] < maxim and orderCells[pos_i] >= minim)
-			inter = orderCells[pos_i];
-		else if(orderCells[pos_i + 1] < maxim and orderCells[pos_i + 1] >= minim)
-			inter = orderCells[pos_i + 1];
-		else
-			inter = orderCells[pos_j];
-		orderCells[pos_i] = maxim; orderCells[pos_i + 1] = inter; orderCells[pos_j] = minim;
-	}
+        std::sort(orderCells.begin() + pos_i, orderCells.begin() + pos_j, std::greater<ValueList>());
 	else
 	{
-		pos_k = (pos_i - 1) + (n / 2);
-		//std::merge()
+		pos_k = pos_i - 1 + n / 2;
 		orderFusion(orderCells, pos_i, pos_k);
 		orderFusion(orderCells, pos_k + 1, pos_j);
 		Fusion(orderCells, pos_i, pos_k, pos_j);
 	}
 }
-size_t pivote(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
+
+/* ORDENACION RAPIDA DA
+	**
+ *
+ * @param orderCells
+ * @param pos_i
+ * @param pos_j
+ * @return
+ *
+size_t pivote(std::vector<ValueList>& orderCells, size_t pos_i, size_t pos_j)
 {
 	size_t p = pos_i;
 	float x = orderCells[pos_i];
@@ -247,55 +257,494 @@ size_t pivote(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
 	}
 }
 
-
-void orderRapida(std::vector<float>& orderCells, size_t pos_i, size_t pos_j)
+**
+ *
+ * @param orderCells
+ * @param pos_i
+ * @param pos_j
+ *
+void orderRapida(std::vector<ValueList>& orderCells, size_t pos_i, size_t pos_j)
 {
 	size_t n = pos_j - pos_i + 1;
 	size_t n0 = 3;
 
 	if(n <= n0)
-	{
-		float maxim = std::max(orderCells[pos_i], std::max(orderCells[pos_i +1],  orderCells[pos_j]));
-		float minim = std::min(orderCells[pos_i], std::min(orderCells[pos_i +1],  orderCells[pos_j]));
-		float inter;
-		if(orderCells[pos_i] < maxim and orderCells[pos_i] >= minim)
-			inter = orderCells[pos_i];
-		else if(orderCells[pos_i + 1] < maxim and orderCells[pos_i + 1] >= minim)
-			inter = orderCells[pos_i + 1];
-		else
-			inter = orderCells[pos_j];
-		orderCells[pos_i] = maxim; orderCells[pos_i + 1] = inter; orderCells[pos_j] = minim;
-	}
+        std::sort(orderCells.begin() + pos_i, orderCells.begin() + pos_j + 1, std::greater<ValueList>());
 	else
 	{
 		size_t p = pivote(orderCells, pos_i, pos_j);
 		orderRapida(orderCells, pos_i, p - 1);
 		orderRapida(orderCells, p + 1, pos_j);
 	}
+}*/
 
+void quickSort(std::vector<ValueList>& orderCells, size_t izq, size_t dch)
+{
+	std::vector<ValueList> aux;
+    float piv;
+	size_t i=izq, d=dch;
+
+	if (izq >= dch) return;
+	piv = orderCells[(izq + dch) / 2].value;
+
+	while (i < d)
+	{
+		for (; orderCells[i].value < piv; ++i);
+		for (; orderCells[d].value > piv; --d);
+		if (i <= d)
+		{
+            std::swap(orderCells[i], orderCells[d]);
+			/*aux = orderCells[i];
+			orderCells[i] = orderCells[d];
+			orderCells[d] = aux;*/
+			++i;
+			--d;
+		}
+	}
+
+	quickSort(orderCells, izq, d);
+	quickSort(orderCells, i, dch);
 }
 
-void orderMonticulo()
-{}
-
 void DEF_LIB_EXPORTED placeDefensesNoOrdenacion(bool** freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight
-		, List<Object*> obstacles, List<Defense*> defenses) {
+		, List<Object*> obstacles, List<Defense*> defenses)
+{
+	float cellWidth = mapWidth / nCellsWidth;
+	float cellHeight = mapHeight / nCellsHeight;
+	float **cellsValues = new float*[nCellsWidth];
+	/**
+	 * Matriz de valores del algoritmo voraz.
+	 */
+	cellsValues = matrixValues(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	/**
+	 * Lista para almacenar la matriz de valores y ordenarlos
+	 */
+	std::list<ValueList> VectorValues;
+	Vector3 v3tmp{}, cellSelection{};
+	int maxAttemps = 1000, n = 0;
 
+	for (int i = 0; i < nCellsWidth; ++i)
+	{
+		for (int j = 0; j < nCellsHeight; ++j)
+		{
+			v3tmp.x = (float)i;
+			v3tmp.y = (float)j;
+			VectorValues.emplace_back(cellsValues[i][j], v3tmp);
+			//std::cout << cellsValues[i][j] << "\t";
+		}
+		//std::cout << std::endl;
+	}
+
+	/**
+	 * Ordenacion de los valores de la lista.
+	 */
+	//VectorValues.sort(std::greater<ValueList>());
+
+	std::list<ValueList>::iterator currentValue = VectorValues.begin();
+	/*while (currentValue != VectorValues.end())
+	{
+		n++;
+		std::cout << n << " - Place -- Valor celda: " << (*currentValue).value << ", Posicion celda: ["
+				<< (*currentValue).position.x << ", " << (*currentValue).position.y << "]" << std::endl;
+		++currentValue;
+	}
+	 currentValue = VectorValues.begin();*/
+
+	List<Defense*>::iterator currentDefense = defenses.begin();
+
+	while(currentDefense != (defenses.end()) and maxAttemps > 0)
+	{
+		/**
+		* funcion select, primera defensa en el centro
+		*/
+		if(currentDefense == defenses.begin())
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight, 1);
+		else
+		{
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight);
+		}
+
+		(*currentDefense)->position.x = (cellSelection.x * cellWidth) + (cellWidth * 0.5f); //(int)(_RAND2(nCellsWidth))* cellWidth) + cellWidth * 0.5f
+		(*currentDefense)->position.y = (cellSelection.y * cellHeight) + (cellHeight * 0.5f); //(int)(_RAND2(nCellsHeight)) *cellHeight) + cellHeight *0.5f
+		(*currentDefense)->position.z = 0;// cellSelection.z;
+		if(factibility(*currentDefense, defenses, obstacles, mapWidth, mapHeight))
+		{
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			(*currentDefense)->health = DEFAULT_DEFENSE_HEALTH;
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			++currentDefense;
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		else
+		{
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		//std::cout << VectorValues.size() << " - currentDefense -- Valor celda: " << (*currentValue).value << ", Posicion celda: ["
+		//<< (*currentValue).position.x << ", " << (*currentValue).position.y << "]" << std::endl;
+	}
+
+#ifdef PRINT_DEFENSE_STRATEGY
+
+	float** cellValues = new float* [nCellsHeight];
+	for(int i = 0; i < nCellsHeight; ++i)
+	{
+		cellValues[i] = new float[nCellsWidth];
+		for(int j = 0; j < nCellsWidth; ++j)
+		{
+			cellValues[i][j] = (int)(cellsValues[i][j]) % 256;
+		}
+	}
+	dPrintMap("defenseValueCellsHead.ppm", nCellsHeight, nCellsWidth, cellHeight, cellWidth, freeCells
+			, cellValues, std::list<Defense*>(), true);
+
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellValues[i];
+	delete [] cellValues;
+	cellValues = nullptr;
+
+#endif
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellsValues[i];
+	//delete [] cellsValues;
+	cellsValues = nullptr;
 }
 
 void DEF_LIB_EXPORTED placeDefensesFusion(bool** freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight
-		, List<Object*> obstacles, List<Defense*> defenses) {
+		, List<Object*> obstacles, List<Defense*> defenses)
+{
+	float cellWidth = mapWidth / nCellsWidth;
+	float cellHeight = mapHeight / nCellsHeight;
+	float **cellsValues = new float*[nCellsWidth];
+	/**
+	 * Matriz de valores del algoritmo voraz.
+	 */
+	cellsValues = matrixValues(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	/**
+	 * Lista para almacenar la matriz de valores y ordenarlos
+	 */
+	std::list<ValueList> VectorValues;
+	Vector3 v3tmp{}, cellSelection{};
+	int maxAttemps = 1000, n = 0;
 
+	for (int i = 0; i < nCellsWidth; ++i)
+	{
+		for (int j = 0; j < nCellsHeight; ++j)
+		{
+			v3tmp.x = (float)i;
+			v3tmp.y = (float)j;
+			VectorValues.emplace_back(cellsValues[i][j], v3tmp);
+			//std::cout << cellsValues[i][j] << "\t";
+		}
+		//std::cout << std::endl;
+	}
+
+	/**
+	 * Ordenacion de los valores de la lista.
+	 */
+	std::vector<ValueList> orderCells(VectorValues.begin(), VectorValues.end());
+    orderFusion(orderCells, orderCells.size()-orderCells.size(), orderCells.size());
+	//VectorValues.sort(std::greater<ValueList>());
+
+	std::list<ValueList>::iterator currentValue = VectorValues.begin();
+
+	List<Defense*>::iterator currentDefense = defenses.begin();
+
+	while(currentDefense != (defenses.end()) and maxAttemps > 0)
+	{
+		/**
+		* funcion select, primera defensa en el centro
+		*/
+		if(currentDefense == defenses.begin())
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight, 1);
+		else
+		{
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight);
+		}
+
+		(*currentDefense)->position.x = (cellSelection.x * cellWidth) + (cellWidth * 0.5f); //(int)(_RAND2(nCellsWidth))* cellWidth) + cellWidth * 0.5f
+		(*currentDefense)->position.y = (cellSelection.y * cellHeight) + (cellHeight * 0.5f); //(int)(_RAND2(nCellsHeight)) *cellHeight) + cellHeight *0.5f
+		(*currentDefense)->position.z = 0;// cellSelection.z;
+		if(factibility(*currentDefense, defenses, obstacles, mapWidth, mapHeight))
+		{
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			(*currentDefense)->health = DEFAULT_DEFENSE_HEALTH;
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			++currentDefense;
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		else
+		{
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		//std::cout << VectorValues.size() << " - currentDefense -- Valor celda: " << (*currentValue).value << ", Posicion celda: ["
+		//<< (*currentValue).position.x << ", " << (*currentValue).position.y << "]" << std::endl;
+	}
+
+#ifdef PRINT_DEFENSE_STRATEGY
+
+	float** cellValues = new float* [nCellsHeight];
+	for(int i = 0; i < nCellsHeight; ++i)
+	{
+		cellValues[i] = new float[nCellsWidth];
+		for(int j = 0; j < nCellsWidth; ++j)
+		{
+			cellValues[i][j] = (int)(cellsValues[i][j]) % 256;
+		}
+	}
+	dPrintMap("defenseValueCellsHead.ppm", nCellsHeight, nCellsWidth, cellHeight, cellWidth, freeCells
+			, cellValues, std::list<Defense*>(), true);
+
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellValues[i];
+	delete [] cellValues;
+	cellValues = nullptr;
+
+#endif
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellsValues[i];
+	delete [] cellsValues;
+	cellsValues = nullptr;
 }
 
+/**
+ * Función placeDefenses por ordenación Rápida.
+ * @param freeCells
+ * @param nCellsWidth
+ * @param nCellsHeight
+ * @param mapWidth
+ * @param mapHeight
+ * @param obstacles
+ * @param defenses
+ */
 void DEF_LIB_EXPORTED placeDefensesRapida(bool** freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight
-		, List<Object*> obstacles, List<Defense*> defenses) {
+		, List<Object*> obstacles, List<Defense*> defenses)
+{
+	float cellWidth = mapWidth / nCellsWidth;
+	float cellHeight = mapHeight / nCellsHeight;
+	float **cellsValues = new float*[nCellsWidth];
+	/**
+	 * Matriz de valores del algoritmo voraz.
+	 */
+	cellsValues = matrixValues(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	/**
+	 * Lista para almacenar la matriz de valores y ordenarlos
+	 */
+	std::list<ValueList> VectorValues;
+	Vector3 v3tmp{}, cellSelection{};
+	int maxAttemps = 1000, n = 0;
 
+    std::cout << "QuickSort: " << std::endl;
+	for (int i = 0; i < nCellsWidth; ++i)
+	{
+		for (int j = 0; j < nCellsHeight; ++j)
+		{
+			v3tmp.x = (float)i;
+			v3tmp.y = (float)j;
+			VectorValues.emplace_back(cellsValues[i][j], v3tmp);
+			std::cout << cellsValues[i][j] << "\t";
+		}
+		std::cout << std::endl;
+	}
+
+	/**
+	 * Ordenacion de los valores de la lista.
+	 */
+	std::vector<ValueList> orderCells(VectorValues.begin(), VectorValues.end());
+	//quickSort(orderCells, orderCells.size()-orderCells.size(), orderCells.size());
+	VectorValues.sort(std::greater<ValueList>());
+
+	std::list<ValueList>::iterator currentValue = VectorValues.begin();
+    while (currentValue != VectorValues.end())
+    {
+        n++;
+        std::cout << n << " - Place -- Valor celda: " << (*currentValue).value << ", Posicion celda: ["
+                  << (*currentValue).position.x << ", " << (*currentValue).position.y << "]" << std::endl;
+        ++currentValue;
+    }
+    currentValue = VectorValues.begin();
+	List<Defense*>::iterator currentDefense = defenses.begin();
+
+	while(currentDefense != (defenses.end()) and maxAttemps > 0)
+	{
+		/**
+		* funcion select, primera defensa en el centro
+		*/
+		if(currentDefense == defenses.begin())
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight, 1);
+		else
+		{
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight);
+		}
+
+		(*currentDefense)->position.x = (cellSelection.x * cellWidth) + (cellWidth * 0.5f); //(int)(_RAND2(nCellsWidth))* cellWidth) + cellWidth * 0.5f
+		(*currentDefense)->position.y = (cellSelection.y * cellHeight) + (cellHeight * 0.5f); //(int)(_RAND2(nCellsHeight)) *cellHeight) + cellHeight *0.5f
+		(*currentDefense)->position.z = 0;// cellSelection.z;
+		if(factibility(*currentDefense, defenses, obstacles, mapWidth, mapHeight))
+		{
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			(*currentDefense)->health = DEFAULT_DEFENSE_HEALTH;
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			++currentDefense;
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		else
+		{
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		//std::cout << VectorValues.size() << " - currentDefense -- Valor celda: " << (*currentValue).value << ", Posicion celda: ["
+		//<< (*currentValue).position.x << ", " << (*currentValue).position.y << "]" << std::endl;
+	}
+
+#ifdef PRINT_DEFENSE_STRATEGY
+
+	float** cellValues = new float* [nCellsHeight];
+	for(int i = 0; i < nCellsHeight; ++i)
+	{
+		cellValues[i] = new float[nCellsWidth];
+		for(int j = 0; j < nCellsWidth; ++j)
+		{
+			cellValues[i][j] = (int)(cellsValues[i][j]) % 256;
+		}
+	}
+	dPrintMap("defenseValueCellsHead.ppm", nCellsHeight, nCellsWidth, cellHeight, cellWidth, freeCells
+			, cellValues, std::list<Defense*>(), true);
+
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellValues[i];
+	delete [] cellValues;
+	cellValues = nullptr;
+
+#endif
+    std::cout << "eliminando cellsValues" << std::endl;
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellsValues[i];
+	delete [] cellsValues;
+	cellsValues = nullptr;
+    std::cout << "fin orderRapida" << std::endl;
 }
 
+/**
+ * Función placeDefenses por ordenación Monticulo.
+ * @param freeCells
+ * @param nCellsWidth
+ * @param nCellsHeight
+ * @param mapWidth
+ * @param mapHeight
+ * @param obstacles
+ * @param defenses
+ */
 void DEF_LIB_EXPORTED placeDefensesMonticulo(bool** freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight
-		, List<Object*> obstacles, List<Defense*> defenses) {
+		, List<Object*> obstacles, List<Defense*> defenses)
+{
+	float cellWidth = mapWidth / nCellsWidth;
+	float cellHeight = mapHeight / nCellsHeight;
+	float **cellsValues = new float*[nCellsWidth];
+	/**
+	 * Matriz de valores del algoritmo voraz.
+	 */
+	cellsValues = matrixValues(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	/**
+	 * Lista para almacenar la matriz de valores y ordenarlos
+	 */
+	std::list<ValueList> VectorValues;
+	Vector3 v3tmp{}, cellSelection{};
+	int maxAttemps = 1000, n = 0;
 
+	for (int i = 0; i < nCellsWidth; ++i)
+	{
+		for (int j = 0; j < nCellsHeight; ++j)
+		{
+			v3tmp.x = (float)i;
+			v3tmp.y = (float)j;
+			VectorValues.emplace_back(cellsValues[i][j], v3tmp);
+			//std::cout << cellsValues[i][j] << "\t";
+		}
+		//std::cout << std::endl;
+	}
+
+	/**
+	 * Ordenacion de los valores de la lista.
+	 */
+	std::vector<ValueList> orderCells(VectorValues.begin(), VectorValues.end());
+    std::make_heap(orderCells.begin(), orderCells.end(), std::greater<ValueList>());//, std::greater<ValueList>()
+    std::sort_heap(orderCells.begin(), orderCells.end(), std::greater<ValueList>());//, std::greater<ValueList>()
+	//VectorValues.sort(std::greater<ValueList>());
+
+	std::list<ValueList>::iterator currentValue = VectorValues.begin();
+
+	List<Defense*>::iterator currentDefense = defenses.begin();
+
+	while(currentDefense != (defenses.end()) and maxAttemps > 0)
+	{
+		/**
+		* funcion select, primera defensa en el centro
+		*/
+		if(currentDefense == defenses.begin())
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight, 1);
+		else
+		{
+			cellSelection = cellSelect(currentValue, freeCells, nCellsWidth, nCellsHeight);
+		}
+
+		(*currentDefense)->position.x = (cellSelection.x * cellWidth) + (cellWidth * 0.5f); //(int)(_RAND2(nCellsWidth))* cellWidth) + cellWidth * 0.5f
+		(*currentDefense)->position.y = (cellSelection.y * cellHeight) + (cellHeight * 0.5f); //(int)(_RAND2(nCellsHeight)) *cellHeight) + cellHeight *0.5f
+		(*currentDefense)->position.z = 0;// cellSelection.z;
+		if(factibility(*currentDefense, defenses, obstacles, mapWidth, mapHeight))
+		{
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			(*currentDefense)->health = DEFAULT_DEFENSE_HEALTH;
+			//std::cout << "vida defensa " << (*currentDefense)->id << ": " << (*currentDefense)->health << std::endl;
+			++currentDefense;
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		else
+		{
+			++currentValue;
+			//quitar de la lista
+			VectorValues.pop_front();
+		}
+		//std::cout << VectorValues.size() << " - currentDefense -- Valor celda: " << (*currentValue).value << ", Posicion celda: ["
+		//<< (*currentValue).position.x << ", " << (*currentValue).position.y << "]" << std::endl;
+	}
+
+#ifdef PRINT_DEFENSE_STRATEGY
+
+	float** cellValues = new float* [nCellsHeight];
+	for(int i = 0; i < nCellsHeight; ++i)
+	{
+		cellValues[i] = new float[nCellsWidth];
+		for(int j = 0; j < nCellsWidth; ++j)
+		{
+			cellValues[i][j] = (int)(cellsValues[i][j]) % 256;
+		}
+	}
+	dPrintMap("defenseValueCellsHead.ppm", nCellsHeight, nCellsWidth, cellHeight, cellWidth, freeCells
+			, cellValues, std::list<Defense*>(), true);
+
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellValues[i];
+	delete [] cellValues;
+	cellValues = nullptr;
+
+#endif
+	for(int i = 0; i < nCellsHeight ; ++i)
+		delete [] cellsValues[i];
+	delete [] cellsValues;
+	cellsValues = nullptr;
 }
 
 void DEF_LIB_EXPORTED placeDefenses3(bool** freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight
@@ -308,8 +757,8 @@ void DEF_LIB_EXPORTED placeDefenses3(bool** freeCells, int nCellsWidth, int nCel
 	long int rNOrdenado = 0;
 	cNOrdenado.activar();
 	do {
-
 		//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+		placeDefensesNoOrdenacion(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
 		++rNOrdenado;
 	} while(cNOrdenado.tiempo() < e_abs / (e_rel + e_abs));
 	cNOrdenado.parar();
@@ -318,8 +767,8 @@ void DEF_LIB_EXPORTED placeDefenses3(bool** freeCells, int nCellsWidth, int nCel
 	long int rFusion = 0;
 	cFusion.activar();
 	do {
-
 		//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+		//placeDefensesFusion(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
 		++rFusion;
 	} while(cFusion.tiempo() < e_abs / (e_rel + e_abs));
 	cFusion.parar();
@@ -328,8 +777,8 @@ void DEF_LIB_EXPORTED placeDefenses3(bool** freeCells, int nCellsWidth, int nCel
 	long int rRapida = 0;
 	cRapida.activar();
 	do {
-
 		//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+		//placeDefensesRapida(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
 		++rRapida;
 	} while(cRapida.tiempo() < e_abs / (e_rel + e_abs));
 	cRapida.parar();
@@ -338,13 +787,13 @@ void DEF_LIB_EXPORTED placeDefenses3(bool** freeCells, int nCellsWidth, int nCel
 	long int rMonticulo = 0;
 	cMonticulo.activar();
 	do {
-
 		//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+		placeDefensesMonticulo(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
 		++rMonticulo;
 	} while(cMonticulo.tiempo() < e_abs / (e_rel + e_abs));
 	cMonticulo.parar();
 
-	std::cout << (nCellsWidth * nCellsHeight) << '\t' << cNOrdenado.tiempo() / (double)rNOrdenado << '\t'
+	std::cout << nCellsWidth << "*" << nCellsHeight << '\t' << cNOrdenado.tiempo() / (double)rNOrdenado << '\t'
 	<< cFusion.tiempo()*2 / (double)rFusion << '\t' << cRapida.tiempo()*3 / (double)rRapida << '\t'
 	<< cMonticulo.tiempo()*4 / (double)rMonticulo << std::endl;
 }
