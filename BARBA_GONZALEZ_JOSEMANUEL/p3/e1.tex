@@ -1,1 +1,51 @@
-Escriba aquí su respuesta al ejercicio 1.
+La estructura para englobar los datos a ordenar y para seleccionar la posición de la lista de defensas es la clase ``ValueList'' con los atributos ``value'' y ``position'', dicha clase se usa para construir un vector de la biblioteca standard ``std::vector$<$ValueList$>$'' en cada función de ordenación y ordenar el vector previamente a seleccionar su posición en el mapa.
+
+Se sobrecargan los operadores ``$<$'' ``$>$'' ``$<=$'' ``$>=$'' para las comparaciones en los algoritmos de ordenación.
+
+\begin{lstlisting}
+class ValueList
+{
+	public:
+		ValueList(float vl=0, Vector3 ps=0): value(vl), position(ps){};
+		float value;
+		Vector3 position;
+};
+bool operator <(const ValueList &A, const ValueList &B){ return A.value < B.value; }
+bool operator >(const ValueList &A, const ValueList &B){ return A.value > B.value; }
+bool operator <=(const ValueList &A, const ValueList &B){ return A.value <= B.value; }
+bool operator >=(const ValueList &A, const ValueList &B){ return A.value >= B.value; }
+\end{lstlisting}
+
+A continuación se muestra la función que crea la matriz que da valores a las celdas del mapa mediante la funcion ``defaultCellValue()'', para luego ser introducidas en el vector ``std::vector$<$ValueList$>$'' y ser ordenadas en su caso.
+\begin{lstlisting}
+/**
+* Funcion que crea una matriz de valores correspondientes a cada celda del mapa dados por la funcion cellValue, siendo
+* la funcion Candidatos del algoritmo Voraz
+* @param freeCells matriz de numero de celdas-ancho por numero de celdas-alto, contiene true si el centro de la celda
+*                  esta libre y false si el centro de la celda esta ocupado por un obstaculo.
+* @param nCellsWidth numero de celdas en anchura.
+* @param nCellsHeight numero de celdas en altura.
+* @param mapWidth ancho total del mapa preestablecido.
+* @param mapHeight alto total del mapa preestablecido.
+* @param obstacles Lista actual de Obstaculos creados y situados.
+* @param defenses Lista actual de Defensas creadas, no situadas.
+* @return Devuelve una matriz rellena con los valores de las posiciones candidatas prometedoras.
+*/
+float** matrixValues(bool** freeCells, int nCellsWidth, int nCellsHeight
+, float mapWidth, float mapHeight, const List<Object*> &obstacles, const List<Defense*> &defenses)
+{
+	float **matrixOfValues; matrixOfValues = new float* [nCellsWidth];
+	float MAXV = 100.0f;
+	float MEDV = MAXV * 0.9f;
+
+	for (int i = 0; i < nCellsWidth; ++i)
+		matrixOfValues[i] = new float [nCellsHeight];
+
+	for(int iW = nCellsWidth; iW < nCellsWidth; iW++)
+		for(int iH = nCellsHeight; iH < nCellsHeight; iH++)
+			matrixOfValues[iW][iH] = defaultCellValue(iW, iH, freeCells, nCellsWidth, nCellsHeight, mapWidth,
+			mapHeight, obstacles, defenses);
+
+return matrixOfValues;
+}
+\end{lstlisting}

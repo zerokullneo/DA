@@ -1,1 +1,47 @@
-Escriba aquí su respuesta al ejercicio 4.
+Para las pruebas de caja negra se ha usado el método estándar, se realizan cuatro bucles, uno por cada llamada a las diferentes ordenaciones, y se tomas muestras hasta los  parámetros indicados en $e_abs / (e_rel + e_abs)$.
+
+\begin{lstlisting}
+cronometro cNOrdenado;
+long int rNOrdenado = 0;
+cNOrdenado.activar();
+do
+{
+	//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+	placeDefensesNoOrdenacion(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	++rNOrdenado;
+} while(cNOrdenado.tiempo() < e_abs / (e_rel + e_abs));
+cNOrdenado.parar();
+
+cronometro cFusion;
+long int rFusion = 0;
+cFusion.activar();
+do
+{
+	//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+	placeDefensesFusion(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	++rFusion;
+} while(cFusion.tiempo() < e_abs / (e_rel + e_abs));
+cFusion.parar();
+
+cronometro cRapida;
+long int rRapida = 0;
+cRapida.activar();
+do
+{
+	//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+	placeDefensesRapida(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	++rRapida;
+} while(cRapida.tiempo() < e_abs / (e_rel + e_abs));
+cRapida.parar();
+
+cronometro cMonticulo;
+long int rMonticulo = 0;
+cMonticulo.activar();
+do
+{
+	//codigo de placedefenses de la p1 sin ordenar, o llamar a la funcion
+	placeDefensesMonticulo(freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+	++rMonticulo;
+} while(cMonticulo.tiempo() < e_abs / (e_rel + e_abs));
+cMonticulo.parar();
+\end{lstlisting}

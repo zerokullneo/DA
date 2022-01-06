@@ -1,1 +1,85 @@
-Escriba aquí su respuesta al ejercicio 3.
+Método de ordenación por QuickSort (método propio de Rápida) transcrita a código C++.
+
+\begin{lstlisting}
+/**
+* Funcion que ordena por el metodo "QuickSort", en este caso, un vector de la clase "ValueList" por su atributo "value".
+* @param orderCells Variable del vector inicial pasado por referencia.
+* @param izq Variable con la posicion inicial del vector.
+* @param dch Variable con la posicion final del vector.
+*/
+void quickSort(std::vector<ValueList>& orderCells, int izq, int dch)
+{
+	float piv;
+	int i=izq, d=dch;
+
+	if (izq >= dch) return;
+	piv = orderCells[(izq + dch) / 2].value;
+
+	while (i < d)
+	{
+		for (; orderCells[i].value < piv; ++i);
+		for (; orderCells[d].value > piv; --d);
+		if (i <= d)
+		{
+			std::swap(orderCells[i], orderCells[d]);
+			++i;
+			--d;
+		}
+	}
+
+	quickSort(orderCells, izq, d);
+	quickSort(orderCells, i, dch);
+}
+\end{lstlisting}
+
+Método de ordenación Rápida descrito en la teoría por pseudocódigo y transcrita a código C++.
+\begin{lstlisting}
+/**
+* Funcion que dado un pivote ordena las posiciones adyacentes.
+* @param orderCells Variable que tiene el estado actual del vector pasado por referencia.
+* @param pos_i Variable que recibe el inicio de tramo a evaluar.
+* @param pos_j Variable que recibe el final de tramo a evaluar.
+* @return Devuelve el pivote actual.
+*/
+int pivote(std::vector<ValueList>& orderCells, int pos_i, int pos_j)
+{
+	int p = pos_i;
+	ValueList x = orderCells[pos_i], aux;
+
+	for (int k = pos_i + 1; k < pos_j; ++k)
+	{
+		if (orderCells[k].value <= x.value)
+		{
+			p++;
+			aux = orderCells[p];
+			orderCells[p] = orderCells[k];
+			orderCells[k] = aux;
+			//std::swap(orderCells[p], orderCells[k]);
+		}
+		orderCells[pos_i] = orderCells[p];
+		orderCells[p] = x;
+	}
+	return p;
+}
+
+/**
+* Funcion que ordena por el metodo "Rapida", en este caso, un vector de la clase "ValueList" por su atributo "value".
+* @param orderCells Variable del vector inicial pasado por referencia.
+* @param pos_i Variable con la posicion inicial del vector.
+* @param pos_j Variable con la posicion final del vector.
+*/
+void orderRapida(std::vector<ValueList>& orderCells, int pos_i, int pos_j)
+{
+	int n = pos_j - pos_i + 1;
+	int n0 = 3;
+
+	if(n <= n0)
+		std::sort(orderCells.begin() + pos_i, orderCells.begin() + pos_j + 1, std::greater<ValueList>());
+	else
+	{
+		int p = pivote(orderCells, pos_i, pos_j);
+		orderRapida(orderCells, pos_i, p - 1);
+		orderRapida(orderCells, p + 1, pos_j);
+	}
+}
+\end{lstlisting}

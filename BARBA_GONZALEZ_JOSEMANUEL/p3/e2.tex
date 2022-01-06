@@ -1,1 +1,56 @@
-Escriba aquí su respuesta al ejercicio 2.
+Método de ordenación por Fusión descrito en la teoría por pseudocódigo y transcrita a código C++.
+
+\begin{lstlisting}
+/**
+ * Funcion secundaria de Ordenacion por Fusion que realiza los intercambios indicodos por los parametros de entrada.
+ * @param v Variable que tiene el estado actual del vector pasado por referencia.
+ * @param i Variable que recibe el inicio de tramo a evaluar.
+ * @param k Variable que recibe el tramo de posiciones a evaluar.
+ * @param j Variable que recibe el final de tramo a evaluar.
+ */
+void Fusion(std::vector<ValueList>& v, size_t i, size_t k, size_t j)
+{
+	size_t n = j - i + 1;
+	size_t p = i; size_t q = k + 1;
+	std::vector<ValueList> w;
+
+	for(int it = 0; it < n; ++it)
+	{
+		if (p <= k and (q > j or v[p].value <= v[q].value))
+		{
+			w.push_back(v[p]);
+			p++;
+		}
+		else
+		{
+			w.push_back(v[q]);
+			q++;
+		}
+	}
+
+	for (int it = 0; it < n; ++it)
+		v[i + it] = w[it];
+}
+
+/**
+ * Funcion que ordena por el metodo "Fusion", en este caso, un vector de la clase "ValueList" por su atributo "value".
+ * @param orderCells Variable del vector inicial pasado por referencia.
+ * @param pos_i Variable con la posicion inicial del vector.
+ * @param pos_j Variable con la posicion final del vector.
+ */
+void orderFusion(std::vector<ValueList>& orderCells, size_t pos_i, size_t pos_j)
+{
+	size_t n = pos_j - pos_i + 1;
+	size_t n0 = 3, pos_k;
+
+	if (n <= n0)
+		std::sort(orderCells.begin() + pos_i, orderCells.begin() + pos_j, std::greater<ValueList>());
+	else
+	{
+		pos_k = pos_i - 1 + n / 2;
+		orderFusion(orderCells, pos_i, pos_k);
+		orderFusion(orderCells, pos_k + 1, pos_j);
+		Fusion(orderCells, pos_i, pos_k, pos_j);
+	}
+}
+\end{lstlisting}

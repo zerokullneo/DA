@@ -1,1 +1,50 @@
-Escriba aquí su respuesta al ejercicio 5.
+Teniendo en cuenta que:
+\begin{enumerate}
+	\item N es el numero de celdas del terreno de batalla.
+	\item O el número de obstáculos del terreno de batalla.
+	\item D el numero de defensas a colocar en el terreno de batalla.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Sin Ordenación}
+\subparagraph{Complejidad Espacial}
+Vector de STL std::vector$<$ValueList$>$ $\Theta(N)$
+
+\subparagraph{Complejidad Valoración y Selección}
+$\Theta(DN^2) + \Theta(O)$
+
+\subparagraph{Complejidad Temporal}
+$\Theta(NO) + \Theta(DN^2)$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Ordenación Fusión}
+\subparagraph{Complejidad Espacial}
+Vector de STL std::vector$<$ValueList$>$ $\Theta(N)$
+
+\subparagraph{Complejidad Valoración y Selección}
+$\Theta(DN^2) + \Theta(O)$
+
+\subparagraph{Complejidad Temporal}
+$\Theta(NO) + \Theta(log N) + \Theta(DN)$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Ordenación Rápida}
+\subparagraph{Complejidad Espacial}
+Vector de STL std::vector$<$ValueList$>$ $\Theta(N)$
+
+\subparagraph{Complejidad Valoración y Selección}
+$\Theta(DN^2) + \Theta(O)$
+
+\subparagraph{Complejidad Temporal}
+$\Theta(NO) + \Theta(N log N) + \Theta(DN)$
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Ordenación Montículo}
+\subparagraph{Complejidad Espacial}
+Vector de STL std::vector$<$ValueList$>$ $\Theta(N)$
+
+\subparagraph{Complejidad Valoración y Selección}
+$\Theta(DC^2) + \Theta(P)$
+
+\subparagraph{Complejidad Temporal}
+$\Theta(NO) + \Theta(N log N) + \Theta(DN)$
